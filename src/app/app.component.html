@@ -11,8 +11,7 @@
     </div>
     <div class="col-5"
          *ngFor="let item of pies; let i =index">
-      <app-pie-chart [data]="item.data"
-                     [idVal]="i+''" />
+      <app-pie-chart [data]="item.data" />
     </div>
   </div>
   <div class="row">
