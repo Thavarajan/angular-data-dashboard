@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, ElementRef, Input, OnInit } from "@angular/core";
 import { GoogleChartService } from "../service/google-chart.service";
 
 @Component({
@@ -9,32 +9,38 @@ import { GoogleChartService } from "../service/google-chart.service";
 export class PieChartComponent implements OnInit {
   private gLib: any;
 
-  constructor(private gChartService: GoogleChartService) {
+  @Input()
+  public data: any[] = [];
+
+
+
+  constructor(private gChartService: GoogleChartService, private elRef: ElementRef) {
     this.gLib = this.gChartService.getGoogle();
 
     // Load the Visualization API and the controls package.
     this.gLib.charts.load("current", { packages: ["corechart", "table"] });
 
-    // Set a callback to run when the Google Visualization API is loaded.
-    this.gLib.charts.setOnLoadCallback(this.drawChart.bind(this));
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    // Set a callback to run when the Google Visualization API is loaded.
+    this.gLib.charts.setOnLoadCallback(this.drawChart.bind(this));
+
+
+  }
 
   private drawChart() {
     const chart = new this.gLib.visualization.PieChart(
-      document.getElementById("divPieChart")
+      this.elRef.nativeElement
     );
+    console.log(this.data);
     const data = new this.gLib.visualization.DataTable();
     data.addColumn("string", "Accessories");
     data.addColumn("number", "Quantity");
-    data.addRows([
-      ["Computers", 3],
-      ["Hard Drives", 6],
-      ["Printers", 4],
-      ["Monitors", 5],
-      ["RAM", 2],
-    ]);
+    this.data.forEach((element: any) => {
+      data.addRow([element.Accessories, element.Quantity])
+    });
+
 
     const options = { title: "Sales Info" };
 
